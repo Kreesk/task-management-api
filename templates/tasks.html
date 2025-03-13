@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Task Management</title>
+    <meta charset="UTF-8">
+    <title>Task List</title>
 </head>
 <body>
     <h1>Tasks</h1>
     <ul>
         {% for task in tasks %}
-        <li>{{ task.title }} ({{ task.status }})</li>
+            <li>{{ task.id }} - {{ task.title }} ({{ task.status }})</li>
         {% endfor %}
     </ul>
-    <form method="POST" action="/tasks">
-        <input type="text" name="title" placeholder="Task title" required>
-        <button type="submit">Add Task</button>
-    </form>
 </body>
 </html>
