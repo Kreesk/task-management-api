@@ -21,10 +21,10 @@
 # Использование API
 
 GET /api/tasks — получить список всех задач.
-    curl http://127.0.0.1:5000/api/tasks
+curl http://127.0.0.1:5000/api/tasks
 
 POST /api/tasks — добавить новую задачу.
-    curl -X POST -H "Content-Type: application/json" -d '{"title":"Новая задача"}' http://127.0.0.1:5000/api/tasks
+curl -X POST -H "Content-Type: application/json" -d '{"title":"Новая задача"}' http://127.0.0.1:5000/api/tasks
 
 # Просмотр задач
 Откройте в браузере: http://127.0.0.1:5000/tasks
