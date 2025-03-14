@@ -1,4 +1,3 @@
-import uvicorn
 import sqlite3
 
 from asgiref.wsgi import WsgiToAsgi
@@ -55,4 +54,4 @@ def tasks():
 
 if __name__ == '__main__':
     init_db()
-    uvicorn.run(asgi_app, host='127.0.0.1', port=5000)
+    app.run(debug=True, host='127.0.0.1', port=5000)
