@@ -1,46 +1,52 @@
 # Task Management API
 
-Простое веб-приложение для управления задачами, построенное на Flask и Flask-RESTful. 
-Поддерживает добавление задач и их просмотр через REST API и HTML-интерфейс.
+Простое веб-приложение для управления задачами, построенное на Flask и Flask-RESTful. Поддерживает создание, просмотр, обновление и удаление задач через REST API, а также их отображение через HTML-интерфейс.
 
 ## Возможности
-- Добавление новых задач через POST-запросы к `/api/tasks`.
-- Просмотр списка задач через GET-запросы к `/api/tasks` или HTML-страницу `/tasks`.
-- Хранение задач в базе данных SQLite (`tasks.db`).
+- **Создание задач**: Добавление новых задач через POST-запросы к `/api/tasks`.
+- **Просмотр задач**: Получение списка задач через GET-запросы к `/api/tasks` или HTML-страницу `/tasks`.
+- **Обновление задач**: Изменение статуса задач через PUT-запросы к `/api/tasks/<id>`.
+- **Удаление задач**: Удаление задач через DELETE-запросы к `/api/tasks/<id>`.
+- Хранение задач в базе данных SQLite (по умолчанию `tasks.db`).
 
 ## Установка
+
 1. Склонируйте репозиторий:
-   git clone https://github.com/Kreesk/task-management-api.git
-   cd task-management-api
+    git clone https://github.com/Kreesk/task-management-api.git
+    cd task-management-api
 
 2. Установите зависимости:
     pip install -r requirements.txt
 
-3. Запустите приложение:
+3. Создайте файл .env для настройки:
+    DATABASE=tasks.db
+    HOST=127.0.0.1
+    PORT=5000
+    DEBUG=True
+
+4. Запустите приложение:
     python app.py
 
-# Использование API
+## Использование API
+### Получить список всех задач
+    curl http://127.0.0.1:5000/api/tasks
 
-GET /api/tasks — получить список всех задач.
-curl http://127.0.0.1:5000/api/tasks
+### Добавить новую задачу
+    curl -X POST -H "Content-Type: application/json" -d '{"title": "Новая задача"}' http://127.0.0.1:5000/api/tasks
 
-POST /api/tasks — добавить новую задачу.
-curl -X POST -H "Content-Type: application/json" -d '{"title":"Новая задача"}' http://127.0.0.1:5000/api/tasks
+### Обновить статус задачи
+    curl -X PUT -H "Content-Type: application/json" -d '{"status": "done"}' http://127.0.0.1:5000/api/tasks/1
 
-# Просмотр задач
-Откройте в браузере: http://127.0.0.1:5000/tasks
+### Удалить задачу
+    curl -X DELETE http://127.0.0.1:5000/api/tasks/1
 
-# Планы на будущее
+## Просмотр задач в браузере
+Откройте: http://127.0.0.1:5000/tasks
 
-## Реализовать обновление и удаление задач.
+## Планы на будущее
+- Добавить авторизацию для защиты API.
+- Расширить функционал: фильтрация задач, категории, дедлайны.
+- Улучшить HTML-интерфейс: добавить форму для создания задач.
 
-## Добавить авторизацию.
-
-
-
-
-
-
-
-
-
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

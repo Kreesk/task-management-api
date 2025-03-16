@@ -1,4 +1,3 @@
-flask
-flask-restful
-uvicorn
-asgiref
+Flask==2.3.3
+Flask-RESTful==0.3.10
+python-dotenv==1.0.0
