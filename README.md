@@ -17,8 +17,8 @@
 ## Установка
 
 1. Склонируйте репозиторий:
-    git clone https://github.com/Kreesk/task-management-api.git
-    cd task-management-api
+    - git clone https://github.com/Kreesk/task-management-api.git
+    - cd task-management-api
 
 2. Установите зависимости:
     pip install -r requirements.txt
@@ -54,23 +54,6 @@ curl -X DELETE http://127.0.0.1:5000/api/tasks/1
 
 # Просмотр задач
 Откройте в браузере: http://127.0.0.1:5000/tasks
-
-# Планы на будущее
-   - Исправить поддержку кириллицы (в процессе).
-   - Улучшить HTML-страницу (добавить кнопки для управления задачами).
-   - Добавить авторизацию.
-
-### Добавить новую задачу
-    curl -X POST -H "Content-Type: application/json" -d '{"title": "Новая задача"}' http://127.0.0.1:5000/api/tasks
-
-### Обновить статус задачи
-    curl -X PUT -H "Content-Type: application/json" -d '{"status": "done"}' http://127.0.0.1:5000/api/tasks/1
-
-### Удалить задачу
-    curl -X DELETE http://127.0.0.1:5000/api/tasks/1
-
-## Просмотр задач в браузере
-Откройте: http://127.0.0.1:5000/tasks
 
 ## Планы на будущее
 - Добавить авторизацию для защиты API.
