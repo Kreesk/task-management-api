@@ -108,6 +108,20 @@ def tasks():
         tasks_list = [{'id' : row[0], 'title' : row[1], 'status' : row[2]} for row in c.fetchall()]
     return render_template('tasks.html', tasks=tasks_list)
 
+@app.route('/tasks/<int:task_id>/done', methods=['POST'])
+def mark_task_done(task_id):
+    with get_db_connection() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+        task = c.fetchone()
+        if not task:
+            return "Задача не найдена!", 404
+        c.execute("UPDATE tasks SET status = 'done' WHERE id = ?", (task_id,))
+        conn.commit()
+        c.execute('SELECT * FROM tasks')
+        tasks_list = [{'id': row[0], 'title': row[1], 'status': row[2]} for row in c.fetchall()]
+    return  render_template('tasks.html', tasks=tasks_list)
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=DEBUG, host=HOST, port=PORT)

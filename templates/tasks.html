@@ -2,27 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Task List</title>
+    <title>Список задач</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         ul { list-style-type: none; padding: 0; }
         li { margin: 10px 0; }
+        button { margin-left: 10px; }
     </style>
 </head>
 <body>
-    <h1>Tasks</h1>
+    <h1>Мои задачи</h1>
     <form method="POST" action="/tasks">
-        <input type="text" name="title" placeholder="Enter task title" required>
-        <button type="submit">Add Task</button>
+        <input type="text" name="title" placeholder="Введите название задачи" required>
+        <button type="submit">Добавить</button>
     </form>
     {% if tasks %}
         <ul>
             {% for task in tasks %}
-                <li>{{ task.id }} - {{ task.title }} ({{ task.status }})</li>
+                <li>
+                    {{ task.id }} - {{ task.title }} ({{ task.status }})
+                    {% if task.status != 'done' %}
+                        <form method="POST" action="/tasks/{{ task.id }}/done" style="display:inline;">
+                            <button type="submit">Готово</button>
+                        </form>
+                    {% endif %}
+                </li>
             {% endfor %}
         </ul>
     {% else %}
-        <p>No tasks yet!</p>
+        <p>Задач пока нет!</p>
     {% endif %}
 </body>
 </html>
