@@ -91,10 +91,19 @@ api.add_resource(TaskResource, '/api/tasks', '/api/tasks/<int:task_id>')
 def index():
     return "Task Management API - Use /tasks to see tasks or /api/tasks for REST API"
 
-@app.route('/tasks', methods=['GET'])
+@app.route('/tasks', methods=['GET', 'POST'])
 def tasks():
     with get_db_connection() as conn:
         c = conn.cursor()
+        if request.method == 'POST':
+            title = request.form.get('title')
+            if not title or not title.strip():
+                return "Title is required", 400
+            if len(title) > 100:
+                return "Title must be less than 100 characters", 400
+            c.execute("INSERT INTO tasks (title, status) VALUES (?, ?)", (title, 'todo'))
+            conn.commit()
+
         c.execute('SELECT * FROM tasks')
         tasks_list = [{'id' : row[0], 'title' : row[1], 'status' : row[2]} for row in c.fetchall()]
     return render_template('tasks.html', tasks=tasks_list)

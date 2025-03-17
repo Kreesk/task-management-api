@@ -11,6 +11,10 @@
 </head>
 <body>
     <h1>Tasks</h1>
+    <form method="POST" action="/tasks">
+        <input type="text" name="title" placeholder="Enter task title" required>
+        <button type="submit">Add Task</button>
+    </form>
     {% if tasks %}
         <ul>
             {% for task in tasks %}
