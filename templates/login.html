@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Вход</title>
+</head>
+<body>
+    <h1>Вход в Task Manager</h1>
+    <form method="POST" action="/login">
+        <label>Логин:</label><br>
+        <input type="text" name="username" required><br>
+        <label>Пароль:</label><br>
+        <input type="password" name="password" required><br>
+        <button type="submit">Войти</button>
+    </form>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
