@@ -6,13 +6,10 @@ from flask import Flask, render_template, request, jsonify, abort, make_response
 from flask_restful import Api, Resource
 from contextlib import contextmanager
 
-
-
-
 app = Flask(__name__)
 app.secret_key = 'my_app_Flask'
 api = Api(app)
-
+load_dotenv(override=True)
 
 ALLOWED_STATUSES = ['todo', 'in_progress', 'done']
 USERNAME = os.getenv('USERNAME', 'admin')
@@ -21,8 +18,6 @@ DATABASE = os.getenv('DATABASE', 'tasks.db')
 HOST = os.getenv('HOST', '127.0.0.1')
 PORT = int(os.getenv('PORT', '5000'))
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-
-load_dotenv(override=True)
 
 
 def init_db():
@@ -82,7 +77,7 @@ class TaskResource(Resource):
             return {'id' : task_id, 'title' : data['title'], 'status' : 'todo'}, 201
 
     def put(self, task_id):
-        task = get_task_or_404(task_id)
+        get_task_or_404(task_id)
         data = request.get_json()
         if not data or 'status' not in data:
             return {'error' : 'Status is required'}, 400
@@ -95,7 +90,7 @@ class TaskResource(Resource):
         return {'message' : f'Task {task_id} updated', 'status' : data['status']}, 200
 
     def delete(self, task_id):
-        task = get_task_or_404(task_id)
+        get_task_or_404(task_id)
         with get_db_connection() as conn:
             c = conn.cursor()
             c.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
