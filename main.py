@@ -7,7 +7,7 @@ from flask_restful import Api, Resource
 from contextlib import contextmanager
 
 app = Flask(__name__)
-app.secret_key = 'my_app_Flask'
+app.secret_key = 'FLASK_APP_KEY'
 api = Api(app)
 load_dotenv(override=True)
 
