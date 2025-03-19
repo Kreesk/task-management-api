@@ -6,7 +6,8 @@ from flask import Flask, render_template, request, jsonify, abort, make_response
 from flask_restful import Api, Resource
 from contextlib import contextmanager
 
-load_dotenv()
+
+
 
 app = Flask(__name__)
 app.secret_key = 'my_app_Flask'
@@ -20,6 +21,8 @@ DATABASE = os.getenv('DATABASE', 'tasks.db')
 HOST = os.getenv('HOST', '127.0.0.1')
 PORT = int(os.getenv('PORT', '5000'))
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
+
+load_dotenv(override=True)
 
 
 def init_db():
@@ -122,7 +125,6 @@ def tasks():
     tasks_list = get_all_tasks()
     return render_template('tasks.html', tasks=tasks_list)
 
-
 @app.route('/tasks/<int:task_id>/done', methods=['POST'])
 def mark_task_done(task_id):
     if 'logged_in' not in session or not session['logged_in']:
@@ -137,8 +139,6 @@ def mark_task_done(task_id):
         conn.commit()
     tasks_list = get_all_tasks()
     return  render_template('tasks.html', tasks=tasks_list)
-
-
 
 @app.route('/logout')
 def logout():
