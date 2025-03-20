@@ -99,14 +99,21 @@ class TaskResource(Resource):
 
 api.add_resource(TaskResource, '/api/tasks', '/api/tasks/<int:task_id>')
 
+@app.route('/api/docs')
+def api_docs():
+    return render_template('api_docs.html')
+
 @app.route('/')
 def index():
-    return "Task Management API - Use /tasks to see tasks or /api/tasks for REST API"
+    if 'logged_in' in session and session['logged_in']:
+        return redirect('/tasks')
+    return render_template('index.html')
 
 @app.route('/tasks', methods=['GET', 'POST'])
 def tasks():
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect('/login')
+    redirect_if_needed = require_login()
+    if redirect_if_needed:
+        return redirect_if_needed
     if request.method == 'POST':
         title = request.form.get('title')
         if not title or not title.strip():
@@ -122,8 +129,9 @@ def tasks():
 
 @app.route('/tasks/<int:task_id>/done', methods=['POST'])
 def mark_task_done(task_id):
-    if 'logged_in' not in session or not session['logged_in']:
-        return redirect('/login')
+    redirect_if_needed = require_login()
+    if redirect_if_needed:
+        return redirect_if_needed
     with get_db_connection() as conn:
         c = conn.cursor()
         c.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
@@ -132,8 +140,7 @@ def mark_task_done(task_id):
             return "Задача не найдена!", 404
         c.execute("UPDATE tasks SET status = 'done' WHERE id = ?", (task_id,))
         conn.commit()
-    tasks_list = get_all_tasks()
-    return  render_template('tasks.html', tasks=tasks_list)
+    return redirect('/tasks')
 
 @app.route('/logout')
 def logout():
@@ -152,11 +159,51 @@ def login():
             return render_template('login.html', error='Неверный логин или пароль')
     return render_template('login.html')
 
-def check_auth():
-    auth = request.authorization
-    if not auth or auth.username != USERNAME or auth.password != PASSWORD:
-        return make_response("Login required!", 401, {'WWW-Authenticate': 'Basic realm="Login Required"'})
-    return True
+@app.route('/tasks/<int:task_id>/delete', methods=['POST'])
+def delete_task(task_id):
+    redirect_if_needed = require_login()
+    if redirect_if_needed:
+        return redirect_if_needed
+    with get_db_connection() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+        task = c.fetchone()
+        if not task:
+            return 'Задача не найдена!', 404
+        c.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+        conn.commit()
+    return redirect('/tasks')
+
+@app.route('/tasks/<int:task_id>/edit', methods=['GET', 'POST'])
+def edit_task(task_id):
+    redirect_if_needed = require_login()
+    if redirect_if_needed:
+        return redirect_if_needed
+    with get_db_connection() as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM tasks WHERE id = ?", (task_id,))
+        task = c.fetchone()
+        if not task:
+            return 'Задача не найдена!', 400
+
+        if request.method == 'POST':
+            title = request.form.get('title')
+            status = request.form.get('status')
+            if not title or not title.strip():
+                return 'Title is required', 400
+            if len(title) > 100:
+                return 'Title must be less than 100 characters', 400
+            if status not in ALLOWED_STATUSES:
+                return 'Invalid status', 400
+            c.execute("UPDATE tasks SET title = ?, status = ? WHERE id = ?", (title, status, task_id))
+            conn.commit()
+            return redirect('/tasks')
+        return render_template('edit_task.html', task={'id': task[0], 'title': task[1], 'status': task[2]})
+
+def require_login():
+    if 'logged_in' not in session or not session['logged_in']:
+        return redirect('/login')
+    return None
 
 if __name__ == '__main__':
     init_db()
